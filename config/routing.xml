@@ -1,0 +1,14 @@
+<routes>
+    <route>
+        <name>survey</name>
+        <path>/survey/{pollname}/{aaa}</path>
+        <controller>Survey</controller>
+        <action>view</action>
+    </route>
+    <route>
+        <name>main</name>
+        <path>/</path>
+        <controller>Survey</controller>
+        <action>index</action>
+    </route>
+</routes>
