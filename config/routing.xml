@@ -1,7 +1,7 @@
 <routes>
     <route>
         <name>survey</name>
-        <path>/survey/{pollname}/{aaa}</path>
+        <path>/survey/{surveyname}</path>
         <controller>Survey</controller>
         <action>view</action>
     </route>

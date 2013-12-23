@@ -6,13 +6,13 @@ class Route {
     protected $name;
     protected $path = '/';
     protected $options = array();
+    protected $placeholders = array();
     protected $parameters = array();
 
     public function __construct($name, $path, array $options = array())
     {
         $this->name = $name;
         $this->path = '/' . ltrim(trim($path), '/');
-        // var_dump($this->path); exit;
         $this->options = $options;
     }
 
@@ -21,7 +21,7 @@ class Route {
         return $this->path;
     }
 
-    public function prepareParameters()
+    public function preparePlaceholders()
     {
         $matches = array();
 
@@ -30,13 +30,13 @@ class Route {
         return $matches[1];
     }
 
-    public function getParameters()
+    public function getPlaceholders()
     {
-        if(!$this->parameters) {
-            $this->parameters = $this->prepareParameters();
+        if(!$this->placeholders) {
+            $this->placeholders = $this->preparePlaceholders();
         }
 
-        return $this->parameters;
+        return $this->placeholders;
     }
 
     public function getMatchRegexp()
@@ -44,9 +44,9 @@ class Route {
         $searches = array();
         $replaces = array();
 
-        foreach ($this->getParameters() as $parameter) {
-            $searches[] = '{' . $parameter . '}';
-            $replaces[] = '(?P<' . $parameter . '>.+)';
+        foreach ($this->getPlaceholders() as $placeholder) {
+            $searches[] = '{' . $placeholder . '}';
+            $replaces[] = '(?P<' . $placeholder . '>.+)';
         }
 
         $searches[] = '/';
@@ -56,8 +56,38 @@ class Route {
 
         $result = str_replace($searches, $replaces, $result);
         $result = '/' . $result . '/';
-        // $result = ltrim($result, '/');
 
         return $result;
+    }
+
+    public function match($path)
+    {
+        $matchRegexp = $this->getMatchRegexp();
+
+        if(preg_match($matchRegexp, $path, $matches) !== false) {
+            foreach ($this->placeholders as $parameter) {
+                //WTF? Undefined index with really existing index
+                $this->parameters[$parameter] = @$matches[$parameter];
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function getController()
+    {
+        return $this->options['controller'];
+    }
+
+    public function getAction()
+    {
+        return $this->options['action'];
     }
 }
