@@ -8,6 +8,8 @@ class SurveyController extends BaseController
 {
     public function viewAction($surveyname)
     {
-        echo $surveyname, PHP_EOL;
+        return $this->render('Survey::view', array(
+            'name' => 'testname'
+        ));
     }
 }

@@ -26,4 +26,9 @@ class DirectoryResolver
     {
         return $this->root . DS . 'config' . DS . $file;
     }
+
+    public function getTemplatePath($file, $directory = '')
+    {
+        return $this->root . DS . 'Views' . DS . $directory . DS . $file;
+    }
 }

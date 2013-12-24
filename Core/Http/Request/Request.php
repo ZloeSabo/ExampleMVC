@@ -4,7 +4,8 @@ namespace Core\Http\Request;
 
 use Core\ParameterStorage;
 
-class Request implements RequestInterface {
+class Request implements RequestInterface 
+{
 
     protected $post;
     protected $get;

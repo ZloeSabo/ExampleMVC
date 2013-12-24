@@ -5,8 +5,9 @@ use Core\Http\Request\Request;
 
 //For use with builtin php server
 if(PHP_SAPI == 'cli') {
-
+    var_dump($_SERVER);
     if (is_file($_SERVER['DOCUMENT_ROOT'] . DS . $_SERVER['SCRIPT_NAME'])) {
+        var_dump('wtf');
         return false;
     }
 
