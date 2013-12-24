@@ -16,7 +16,7 @@ class AppCore
 
     public function __construct()
     {
-        set_error_handler(array($this, 'handleError'));
+        // set_error_handler(array($this, 'handleError'));
         register_shutdown_function(array($this, 'handleShutdown'));
 
         $configLoader = new RouteConfigLoader(DirectoryResolver::instance()->getConfigFilePath('routing.xml'));
@@ -27,35 +27,42 @@ class AppCore
 
     public function handleRequest(RequestInterface $request)
     {
-        $route = $this->router->match($request);
+        try {
+            $route = $this->router->match($request);
 
-        //TODO move this stuff to separate class
-        $routeParameters = $route->getParameters();
-        $controllerClass = new \ReflectionClass('Controllers\\' . $route->getController().'Controller');
-        $action = $controllerClass->getMethod(lcfirst($route->getAction()) . 'Action');
-        $parameters = $action->getParameters();
+            //TODO move this stuff to separate class
+            $routeParameters = $route->getParameters();
+            $controllerClass = new \ReflectionClass('Controllers\\' . $route->getController().'Controller');
+            $action = $controllerClass->getMethod(lcfirst($route->getAction()) . 'Action');
+            $parameters = $action->getParameters();
 
-        $actionParameters = array();
-        if(count($parameters)) {
-            $actionParameters = array_map(function($actionParameterName) use($routeParameters) { 
-                return $routeParameters[$actionParameterName->getName()];
-            }, $parameters);
+            $actionParameters = array();
+            if(count($parameters)) {
+                $actionParameters = array_map(function($actionParameterName) use($routeParameters) { 
+                    return $routeParameters[$actionParameterName->getName()];
+                }, $parameters);
+            }
+
+            $controllerInstance = $controllerClass->newInstance();
+
+            $templatingProperty = $controllerClass->getProperty('templating');
+            $templatingProperty->setAccessible(true);
+            $templatingProperty->setValue($controllerInstance, $this->templating);
+
+            $response = $action->invokeArgs($controllerInstance, $actionParameters);
+            
+            //TODO capture output and show in shutdown function
+            echo $response;
+        } catch (\Exception $e) {
+            $this->handleError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
         }
 
-        $controllerInstance = $controllerClass->newInstance();
-
-        $templatingProperty = $controllerClass->getProperty('templating');
-        $templatingProperty->setAccessible(true);
-        $templatingProperty->setValue($controllerInstance, $this->templating);
-
-        $response = $action->invokeArgs($controllerInstance, $actionParameters);
-
-        echo $response;
     }
 
     public function handleError($errno, $errstr, $errfile, $errline)
     {
-        if (!(error_reporting() & $errno)) {
+        // var_dump($errno, error_reporting() & $errno, $errstr, $errfile, $errline); exit;
+        if (!(error_reporting() & $errno & E_NOTICE)) {
             return;
         }
         $backtrace = array_reverse(debug_backtrace());
@@ -63,7 +70,7 @@ class AppCore
         //TODO show error backtrace
 
         $errorContent = $this->templating->render('', array(
-            'content' => 'Something went wrong ' //. implode('<br/>', $backtrace),
+            'content' => 'Something went wrong: ' . $errstr,
         ));
 
         echo new Response($errorContent, 500);

@@ -13,7 +13,7 @@ class DirectoryResolver
         $this->root = realpath(__DIR__ . DS . '..');
     }
 
-    public function instance()
+    public static function instance()
     {
         if(!self::$resolver) {
             self::$resolver = new self();

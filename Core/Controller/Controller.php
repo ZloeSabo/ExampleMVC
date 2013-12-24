@@ -10,8 +10,6 @@ class Controller
 
     protected function render($template, $variables, $layout = 'layout.html.php')
     {
-        throw new Exception("Error Processing Request", 1);
-        
         $content = $this->templating->render($template, $variables, $layout = 'layout.html.php');
         return new Response($content);
     }   

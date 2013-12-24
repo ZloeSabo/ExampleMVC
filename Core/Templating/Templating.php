@@ -20,9 +20,13 @@ class Templating
 
 
         if(!empty($template)) {
-            list($directory, $templateName) = split('::', $template);
+            list($directory, $templateName) = explode('::', $template);
 
             $template = DirectoryResolver::instance()->getTemplatePath($templateName . '.html.php', $directory);
+            if(!file_exists($template)) {
+                throw new TemplatingException(sprintf("Template does not exist: %s/%s", $directory, $templateName));
+            }
+            
 
             ob_start();
             include $template;
@@ -31,6 +35,9 @@ class Templating
 
         if(!empty($layout)) {
             $layout = DirectoryResolver::instance()->getTemplatePath($layout);
+            if(!file_exists($template)) {
+                throw new TemplatingException(sprintf("Layout does not exist: %s", $layout));
+            }
             ob_start();
             include $layout;
             $content = ob_get_clean();

@@ -2,7 +2,9 @@
 
 namespace Core\ConfigLoader;
 
-class ConfigLoaderException extends \Exception
+use Core\CoreException;
+
+class ConfigLoaderException extends CoreException
 {
     
 }
