@@ -1,5 +1,6 @@
 <?php
 
+// var_dump(preg_match('/^survey\/(?P<surveyname>.+)$/g', '/')); exit;
 use Core\AppCore;
 use Core\Http\Request\Request;
 

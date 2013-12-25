@@ -18,6 +18,7 @@ class RouteMatcher {
                 return $route;
             }
         }
+        return false;
     }
 
 

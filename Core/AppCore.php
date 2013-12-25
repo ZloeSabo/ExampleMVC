@@ -32,8 +32,18 @@ class AppCore
 
             //TODO move this stuff to separate class
             $routeParameters = $route->getParameters();
-            $controllerClass = new \ReflectionClass('Controllers\\' . $route->getController().'Controller');
-            $action = $controllerClass->getMethod(lcfirst($route->getAction()) . 'Action');
+            try {
+                $controllerClass = new \ReflectionClass('Controllers\\' . $route->getController().'Controller');
+            } catch (\Exception $e) {
+                throw new CoreException(sprintf("Controller %s does not exist", $route->getController()));
+            }
+
+            try {
+                $actionName = lcfirst($route->getAction()) . 'Action';
+                $action = $controllerClass->getMethod($actionName);
+            } catch (\Exception $e) {
+                throw new CoreException(sprintf("Action %s does not exist for controller %s", $actionName, $route->getController()));
+            }
             $parameters = $action->getParameters();
 
             $actionParameters = array();
@@ -61,8 +71,8 @@ class AppCore
 
     public function handleError($errno, $errstr, $errfile, $errline)
     {
-        // var_dump($errno, error_reporting() & $errno, $errstr, $errfile, $errline); exit;
-        if (!(error_reporting() & $errno & E_NOTICE)) {
+        // var_dump($errno, !(error_reporting() & $errno), $errstr, $errfile, $errline); exit;
+        if (!(error_reporting() & $errno)) {
             return;
         }
         $backtrace = array_reverse(debug_backtrace());

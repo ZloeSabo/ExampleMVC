@@ -64,7 +64,7 @@ class Route {
     {
         $matchRegexp = $this->getMatchRegexp();
 
-        if(preg_match($matchRegexp, $path, $matches) !== false) {
+        if(preg_match($matchRegexp, $path, $matches) == 1) {
             foreach ($this->placeholders as $parameter) {
                 //WTF? Undefined index with really existing index
                 $this->parameters[$parameter] = @$matches[$parameter];

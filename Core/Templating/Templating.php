@@ -35,7 +35,7 @@ class Templating
 
         if(!empty($layout)) {
             $layout = DirectoryResolver::instance()->getTemplatePath($layout);
-            if(!file_exists($template)) {
+            if(!file_exists($layout)) {
                 throw new TemplatingException(sprintf("Layout does not exist: %s", $layout));
             }
             ob_start();

@@ -27,7 +27,9 @@ class Router
     public function match(RequestInterface $request)
     {
         $matchedRoute = $this->routeMatcher->match($request->getPathInfo());
-        $this->currentRoute = $matchedRoute;
+        if(empty($matchedRoute)) {
+            throw new RoutingException(sprintf("No route configured for %s", $request->getPathInfo()));
+        }
 
         return $matchedRoute;
     }
