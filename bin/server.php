@@ -7,4 +7,12 @@ if(version_compare(phpversion(), '5.4.0', '<')) {
     exit;
 }
 
-passthru(PHP_BINARY . ' -S' . ' localhost:8000 ' . __DIR__ . DS . '..' . DS . 'web' . DS . 'index.php');
+$web = __DIR__ . DS . '..' . DS . 'web';
+
+$command = sprintf("%s -S localhost:8000 -t %s %s",
+    PHP_BINARY,
+    $web,
+    __DIR__ . DS . '..' . DS . 'Core' . DS . 'Helper' . DS . 'RoutingHelper.php'
+);
+
+passthru($command);
