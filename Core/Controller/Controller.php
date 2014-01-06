@@ -7,6 +7,7 @@ use Core\Http\Response\Response;
 class Controller
 {
     protected $templating;
+    protected $db;
 
     protected function render($template, $variables, $layout = 'layout.html.php')
     {

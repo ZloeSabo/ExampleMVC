@@ -4,6 +4,8 @@ namespace Core;
 
 use Core\Routing\Router;
 use Core\Routing\RouteConfigLoader;
+use Core\DB\DBManager;
+use Core\DB\DBConfigLoader;
 use Core\Http\Request\RequestInterface;
 use Core\Templating\Templating;
 use Core\Http\Response\Response;
@@ -13,15 +15,30 @@ class AppCore
 
     protected $router;
     protected $templating;
+    protected $db;
 
     public function __construct()
     {
         // set_error_handler(array($this, 'handleError'));
         register_shutdown_function(array($this, 'handleShutdown'));
 
-        $configLoader = new RouteConfigLoader(DirectoryResolver::instance()->getConfigFilePath('routing.xml'));
-        $this->router = new Router($configLoader);
         $this->templating = new Templating();
+
+        try {
+            $configLoader = new RouteConfigLoader(DirectoryResolver::instance()->getConfigFilePath('routing.xml'));
+            $this->router = new Router($configLoader);
+        } catch(\Exception $e) {
+            $this->handleError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
+        }
+
+        try {
+            $configLoader = new DBConfigLoader(DirectoryResolver::instance()->getConfigFilePath('database.xml'));
+            $this->db = new DBManager($configLoader);
+        } catch (\Exception $e) {
+            $this->handleError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
+        }
+
+
 
     }
 
@@ -59,6 +76,10 @@ class AppCore
             $templatingProperty->setAccessible(true);
             $templatingProperty->setValue($controllerInstance, $this->templating);
 
+            $dbProperty = $controllerClass->getProperty('db');
+            $dbProperty->setAccessible(true);
+            $dbProperty->setValue($controllerInstance, $this->db);
+
             $response = $action->invokeArgs($controllerInstance, $actionParameters);
             
             //TODO capture output and show in shutdown function
@@ -94,5 +115,6 @@ class AppCore
         if($error !== null) {
             $this->handleError($error['type'], $error['message'], $error['file'], $error['file']);
         }
+        exit;
     }
 }

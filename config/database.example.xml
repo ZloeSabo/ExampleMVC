@@ -1,0 +1,10 @@
+<connections>
+    <connection>
+        <host>127.0.0.1</host>
+        <port>3306</port>
+        <database>examplemvc</database>
+        <user>root</user>
+        <password>root</password>
+        <encoding>utf8</encoding>
+    </connection>
+</connections>

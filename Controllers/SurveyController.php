@@ -8,6 +8,10 @@ class SurveyController extends BaseController
 {
     public function indexAction()
     {
+        // $sql = $this->db->getConnection();
+        // $sql->query('SELECT * FROM Survey');
+        // var_dump($sql->query('SELECT * FROM Survey'));
+        // var_dump($sql);
         echo "index";
         exit;
     }
