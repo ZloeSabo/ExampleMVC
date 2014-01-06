@@ -1,6 +1,6 @@
 <?php
 
-namespace ExampleMVC\Core\DB;
+namespace Core\DB;
 
 use Core\CoreException;
 

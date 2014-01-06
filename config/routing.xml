@@ -5,10 +5,20 @@
         <controller>Survey</controller>
         <action>view</action>
     </route>
+
+    <route>
+        <name>admin_index</name>
+        <path>/admin</path>
+        <controller>Admin</controller>
+        <action>index</action>
+    </route>
+
     <route>
         <name>main</name>
         <path>/</path>
         <controller>Survey</controller>
         <action>index</action>
     </route>
+
+
 </routes>

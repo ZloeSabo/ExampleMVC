@@ -41,4 +41,24 @@ class DBManager
 
         return $this->connections[$name];
     }
+
+    public function getRepository($repositoryName)
+    {
+        $repository = ucfirst($repositoryName) . 'Repository';
+
+        try {
+            $repositoryClass = new \ReflectionClass('Repository\\' . $repository);
+        } catch (\Exception $e) {
+            throw new DBException(sprintf("Could not load %s", $repository));
+        }
+
+        $repositoryInstance = $repositoryClass->newInstance();
+
+        $dbProperty = $repositoryClass->getProperty('manager');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($repositoryInstance, $this);
+        $dbProperty->setAccessible(false);
+
+        return $repositoryInstance;
+    }
 }

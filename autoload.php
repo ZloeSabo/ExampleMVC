@@ -8,3 +8,6 @@ $classLoader->register();
 
 $controllersLoader = new \Core\SplClassLoader('Controllers', __DIR__);
 $controllersLoader->register();
+
+$repositoryLoader = new \Core\SplClassLoader('Repository', __DIR__);
+$repositoryLoader->register();
