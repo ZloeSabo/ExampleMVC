@@ -11,11 +11,11 @@ class AdminController extends BaseController
     public function indexAction()
     {
         $repo = $this->db->getRepository('Survey');
-        $surveyList = $repo->findAllGroupedByStatus();
-        var_dump($surveyList); exit;
+        $surveys = $repo->findAllGroupedByStatus();
+        // var_dump($surveys); exit;
 
         return $this->render('Admin::index', array(
-            'surveys' => 'testname'
-        ));
+            'surveys' => $surveys
+        ), 'admin.html.php');
     }
 }

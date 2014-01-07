@@ -12,7 +12,7 @@ class SurveyRepository extends ModelRepository
 
     public function findAllGroupedByStatus()
     {
-        $surveys =  $this->getConnection()->query('SELECT * FROM Survey GROUP BY status ORDER BY status');
+        $surveys =  $this->getConnection()->query('SELECT * FROM Survey ORDER BY status');
 
         $groupedSurveys = array('active' => array(), 'drafts' => array(), 'closed' => array());
         return array_reduce($surveys, function($result, $item) {

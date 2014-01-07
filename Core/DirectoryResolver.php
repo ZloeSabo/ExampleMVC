@@ -31,4 +31,9 @@ class DirectoryResolver
     {
         return $this->root . DS . 'Views' . DS . $directory . DS . $file;
     }
+
+    public function getViewHelperPath()
+    {
+        return $this->root . DS . 'Core' . DS . 'Helper' . DS . 'View';
+    }
 }

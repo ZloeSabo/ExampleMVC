@@ -2,7 +2,8 @@
 
 namespace Core\Routing;
 
-class RouteMatcher {
+class RouteMatcher 
+{
 
     protected $routes;
 

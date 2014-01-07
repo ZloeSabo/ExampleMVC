@@ -8,6 +8,7 @@ use Core\DB\DBManager;
 use Core\DB\DBConfigLoader;
 use Core\Http\Request\RequestInterface;
 use Core\Templating\Templating;
+use Core\Templating\Helper\PathHelper;
 use Core\Http\Response\Response;
 
 class AppCore 
@@ -27,6 +28,10 @@ class AppCore
         try {
             $configLoader = new RouteConfigLoader(DirectoryResolver::instance()->getConfigFilePath('routing.xml'));
             $this->router = new Router($configLoader);
+
+            $pathHelper = new PathHelper($this->router);
+            $this->templating->addHelper($pathHelper);
+
         } catch(\Exception $e) {
             $this->handleError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
         }
@@ -37,8 +42,6 @@ class AppCore
         } catch (\Exception $e) {
             $this->handleError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
         }
-
-
 
     }
 

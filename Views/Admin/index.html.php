@@ -1,1 +1,32 @@
-<h1>wtf</h1>
+<?php if(!empty($surveys['active'])): ?>
+<div class="panel panel-primary">
+    <div class="panel-heading">Активный опрос</div>
+    <div class="panel-body">
+        <a href="#"><?php echo $surveys['active'][0]['title'] ?></a>
+    </div>
+</div>  
+<?php endif ?>
+<?php if(!empty($surveys['drafts'])): ?>
+<div class="panel panel-primary">
+    <div class="panel-heading">Черновики</div>
+    <ul class="list-group">
+        <?php foreach($surveys['drafts'] as $draft): ?>
+        <li class="list-group-item">
+            <a href="#"><?php echo $draft['title'] ?></a>
+        </li>
+        <?php endforeach ?>
+    </ul>
+</div>
+<?php endif ?> 
+<?php if(!empty($surveys['closed'])): ?>
+<div class="panel panel-primary">
+    <div class="panel-heading">Закрытые</div>
+    <ul class="list-group">
+        <?php foreach($surveys['closed'] as $closed): ?>
+        <li class="list-group-item">
+            <a href="#"><?php echo $closed['title'] ?></a>
+        </li>
+        <?php endforeach ?>
+    </ul>
+</div>
+<?php endif ?> 

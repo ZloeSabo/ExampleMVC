@@ -2,7 +2,8 @@
 
 namespace Core\Routing;
 
-class Route {
+class Route 
+{
     protected $name;
     protected $path = '/';
     protected $options = array();
@@ -89,5 +90,15 @@ class Route {
     public function getAction()
     {
         return $this->options['action'];
+    }
+
+    public function generate(array $parameters = array())
+    {
+        $searches = array_keys($parameters);
+        array_push($searches, '{', '}');
+        $replaces = array_values($parameters);
+        array_push($replaces, '', '');
+        
+        return str_replace($searches, $replaces, $this->path);
     }
 }

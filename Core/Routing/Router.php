@@ -10,6 +10,7 @@ class Router
 {
     protected $routes = array();
     protected $routeMatcher;
+    protected $routeGenerator;
     protected $correntRoute;
     
     public function __construct(RouteConfigLoader $routeLoader)
@@ -22,6 +23,7 @@ class Router
         }
 
         $this->routeMatcher = new RouteMatcher($this->routes);
+        $this->routeGenerator = new RouteGenerator($this->routes);
     }
 
     public function match(RequestInterface $request)
@@ -36,6 +38,6 @@ class Router
 
     public function generate($name, array $parameters = array())
     {
-
+        return $this->routeGenerator->generate($name, $parameters);
     }
 }

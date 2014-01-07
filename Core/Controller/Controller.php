@@ -11,7 +11,7 @@ class Controller
 
     protected function render($template, $variables, $layout = 'layout.html.php')
     {
-        $content = $this->templating->render($template, $variables, $layout = 'layout.html.php');
+        $content = $this->templating->render($template, $variables, $layout);
         return new Response($content);
     }   
 }
