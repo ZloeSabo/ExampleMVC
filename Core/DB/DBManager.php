@@ -59,6 +59,11 @@ class DBManager
         $dbProperty->setValue($repositoryInstance, $this);
         $dbProperty->setAccessible(false);
 
+        $modelNameProperty = $repositoryClass->getProperty('modelName');
+        $modelNameProperty->setAccessible(true);
+        $modelNameProperty->setValue($repositoryInstance, $repositoryName);
+        $modelNameProperty->setAccessible(false);
+
         return $repositoryInstance;
     }
 }

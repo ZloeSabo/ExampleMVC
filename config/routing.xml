@@ -1,4 +1,12 @@
 <routes>
+
+    <route>
+        <name>survey_edit</name>
+        <path>/survey/{id}/edit</path>
+        <controller>Admin</controller>
+        <action>edit</action>
+    </route>
+
     <route>
         <name>survey</name>
         <path>/survey/{surveyname}</path>

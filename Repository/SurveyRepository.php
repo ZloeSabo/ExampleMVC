@@ -12,7 +12,7 @@ class SurveyRepository extends ModelRepository
 
     public function findAllGroupedByStatus()
     {
-        $surveys =  $this->getConnection()->query('SELECT * FROM Survey ORDER BY status');
+        $surveys = $this->getConnection()->query('SELECT * FROM Survey ORDER BY status');
 
         $groupedSurveys = array('active' => array(), 'drafts' => array(), 'closed' => array());
         return array_reduce($surveys, function($result, $item) {
@@ -37,29 +37,39 @@ class SurveyRepository extends ModelRepository
 
     }
 
-    //TODO get rid of this
-    public function replaceStatusColumn($surveyList)
+    public function findActive()
     {
-        return array_map(function($el) {
-            switch (intval($el['status'])) {
-                case self::SURVEY_ACTIVE:
-                    $el['status'] = 'active';
-                    break;
+        $surveys = $this
+            ->getConnection()
+            ->query('SELECT * FROM Survey WHERE status = :status LIMIT 0, 1', array('status' => self::SURVEY_ACTIVE))
+        ;
 
-                case self::SURVEY_DRAFT:
-                    $el['status'] = 'draft';
-                    break;
-
-                case self::SURVEY_CLOSED:
-                    $el['status'] = 'closed';
-                    break;
-
-                default:
-                    break;
-            }
-
-            return $el;
-        }, $surveyList);
-
+        return empty($surveys) ? null : $surveys[0];
     }
+
+    // //TODO get rid of this
+    // public function replaceStatusColumn($surveyList)
+    // {
+    //     return array_map(function($el) {
+    //         switch (intval($el['status'])) {
+    //             case self::SURVEY_ACTIVE:
+    //                 $el['status'] = 'active';
+    //                 break;
+
+    //             case self::SURVEY_DRAFT:
+    //                 $el['status'] = 'draft';
+    //                 break;
+
+    //             case self::SURVEY_CLOSED:
+    //                 $el['status'] = 'closed';
+    //                 break;
+
+    //             default:
+    //                 break;
+    //         }
+
+    //         return $el;
+    //     }, $surveyList);
+
+    // }
 }

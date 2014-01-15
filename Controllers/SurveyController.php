@@ -8,12 +8,12 @@ class SurveyController extends BaseController
 {
     public function indexAction()
     {
-        // $sql = $this->db->getConnection();
-        // $sql->query('SELECT * FROM Survey');
-        // var_dump($sql->query('SELECT * FROM Survey'));
-        // var_dump($sql);
-        echo "index";
-        exit;
+        $repo = $this->db->getRepository('Survey');
+        $active = $repo->findActive();
+
+        return $this->render('Survey::index', array(
+            'active' => $active
+        ));
     }
 
     public function viewAction($surveyname)
@@ -21,5 +21,10 @@ class SurveyController extends BaseController
         return $this->render('Survey::view', array(
             'name' => 'testname'
         ));
+    }
+
+    public function editAction()
+    {
+        
     }
 }

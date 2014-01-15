@@ -83,6 +83,10 @@ class AppCore
             $dbProperty->setAccessible(true);
             $dbProperty->setValue($controllerInstance, $this->db);
 
+            $requestProperty = $controllerClass->getProperty('request');
+            $requestProperty->setAccessible(true);
+            $requestProperty->setValue($controllerInstance, $request);
+
             $response = $action->invokeArgs($controllerInstance, $actionParameters);
             
             //TODO capture output and show in shutdown function

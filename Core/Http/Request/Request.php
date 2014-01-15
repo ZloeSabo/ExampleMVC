@@ -7,12 +7,12 @@ use Core\ParameterStorage;
 class Request implements RequestInterface 
 {
 
-    protected $post;
-    protected $get;
-    protected $attributes;
-    protected $cookies;
-    protected $files;
-    protected $server;
+    public $post;
+    public $get;
+    public $attributes;
+    public $cookies;
+    public $files;
+    public $server;
     protected $content;
 
     protected $requestUri;
@@ -31,7 +31,7 @@ class Request implements RequestInterface
 
     public static function createFromGlobals()
     {
-        return new static($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
+        return new static($_POST, $_GET, array(), $_COOKIE, $_FILES, $_SERVER);
     }
 
     public function preparePathInfo()
@@ -78,6 +78,20 @@ class Request implements RequestInterface
         }
 
         return $this->requestUri;
+    }
+
+    public function isAjaxRequest()
+    {
+        return 'xmlhttprequest' == strtolower($this->server->get('HTTP_X_REQUESTED_WITH'));
+    }
+
+    public function getContent()
+    {
+        if($this->content == null) {
+            $this->content = file_get_contents('php://input');
+        }
+
+        return $this->content;
     }
 
 }
