@@ -17,7 +17,9 @@
                 <button type="button" class="btn btn-info" id="btn-question-add">Добавить вопрос</button>
             </div>
         </div>
-        <button type="submit" class="btn btn-default">Сохранить</button>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Сохранить</button>
+        </div>
     </form>
 
     <div class="template-question hidden">

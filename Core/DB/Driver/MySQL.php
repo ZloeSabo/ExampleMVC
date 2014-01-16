@@ -54,7 +54,13 @@ class MySQL implements DBDriverInterface
 
         $query->execute($params);
 
-        return $query->fetchAll();
+        if(stristr($sql, 'select') !== false) {
+            return $query->fetchAll();
+        }
+
+        if(stristr($sql, 'insert') !== false) {
+            return $this->pdo->lastInsertId();
+        }
     }
 
 

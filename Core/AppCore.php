@@ -75,17 +75,16 @@ class AppCore
 
             $controllerInstance = $controllerClass->newInstance();
 
-            $templatingProperty = $controllerClass->getProperty('templating');
-            $templatingProperty->setAccessible(true);
-            $templatingProperty->setValue($controllerInstance, $this->templating);
+            $registry = array(
+                'db' => $this->db,
+                'templating' => $this->templating,
+                'request' => $request,
+                'routing' => $this->router
+            );
 
-            $dbProperty = $controllerClass->getProperty('db');
-            $dbProperty->setAccessible(true);
-            $dbProperty->setValue($controllerInstance, $this->db);
-
-            $requestProperty = $controllerClass->getProperty('request');
-            $requestProperty->setAccessible(true);
-            $requestProperty->setValue($controllerInstance, $request);
+            $registryProperty = $controllerClass->getProperty('registry');
+            $registryProperty->setAccessible(true);
+            $registryProperty->setValue($controllerInstance, $registry);
 
             $response = $action->invokeArgs($controllerInstance, $actionParameters);
             

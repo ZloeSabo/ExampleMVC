@@ -13,11 +13,8 @@
     <ul class="list-group">
         <?php foreach($surveys['drafts'] as $draft): ?>
         <li class="list-group-item">
-            <a href="#"><?php echo $draft['title'] ?></a>
+            <a href="<?php echo $helper['path']->path('survey_edit', array('id' => $draft['id'])) ?>"><?php echo $draft['title'] ?></a>
             <div class="pull-right">
-                <a href="<?php echo $helper['path']->path('survey_edit', array('id' => $draft['id'])) ?>">
-                    <span class="glyphicon glyphicon-edit"></span>
-                </a>
                 <a href="#">
                     <span class="glyphicon glyphicon-ok"></span>
                 </a>

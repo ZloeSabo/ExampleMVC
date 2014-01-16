@@ -72,4 +72,12 @@ class SurveyRepository extends ModelRepository
     //     }, $surveyList);
 
     // }
+
+    public function persist(array &$entity = array())
+    {
+        if(!empty($entity) && !isset($entity['status'])) {
+            $entity['status'] = self::SURVEY_DRAFT;
+        }
+        return parent::persist($entity);
+    }
 }

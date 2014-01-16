@@ -5,3 +5,7 @@
     .survey-question-answers .form-control {
         margin-top: 10px;
     }
+
+.survey-container .alert-danger {
+    margin-top: 10px;
+}

@@ -8,7 +8,7 @@ class SurveyController extends BaseController
 {
     public function indexAction()
     {
-        $repo = $this->db->getRepository('Survey');
+        $repo = $this->get('db')->getRepository('Survey');
         $active = $repo->findActive();
 
         return $this->render('Survey::index', array(

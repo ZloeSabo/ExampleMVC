@@ -15,6 +15,7 @@ $(function() {
             $questionTemplate
                 .clone()
                 .attr('class', 'question')
+                .data('id', -(questionCount ? questionCount.length + 1 : 1))
                 .appendTo($questionsForm)
                 .find('input[type="radio"]').attr('name', 'answercount' + (questionCount ? questionCount.length + 1 : 1))
             ;
@@ -57,10 +58,13 @@ $(function() {
                 'dataType': 'json'
             })
             .done(function(data) {
-                console.log('success', data);
+                window.location.pathname = data.redirect;
             })
             .fail(function(data) {
-                console.log('fail', data);
+                $('#survey-form')
+                    .find('.alert').remove().end()
+                    .find('button[type="submit"]').after('<div class="alert alert-danger">' + data.responseJSON.msg + '</div>')
+                ;
             })
             ;
         })
