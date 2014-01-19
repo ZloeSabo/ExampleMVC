@@ -17,7 +17,8 @@ $(function() {
                 .attr('class', 'question')
                 .data('id', -(questionCount ? questionCount.length + 1 : 1))
                 .appendTo($questionsForm)
-                .find('input[type="radio"]').attr('name', 'answercount' + (questionCount ? questionCount.length + 1 : 1))
+                .find('input[type="radio"]').attr('name', 'answercount-' + (questionCount ? questionCount.length + 1 : 1)).end()
+                // .find('form-control')
             ;
         })
         .on('submit', function(ev) {
@@ -32,14 +33,15 @@ $(function() {
                 var question = {
                     'id': $(this).data('id'),
                     'title': $(this).find('.question-title').val(),
-                    'required': $(this).find('input[type="checkbox"]').attr('checked') == 'checked' ? true : false,
+                    'required': $(this).find('input[type="checkbox"]').attr('checked') == 'checked' ? 1 : 0,
                     'type' : $(this).find('input[type="radio"]:checked').val(),
                     'answers' : []
                 };
 
                 $(this).find('.survey-question-answers input').each(function() {
+                    var id =  $(this).data('id');
                     var answer = {
-                        'id' : $(this).data('id'),
+                        'id' : id ? id : -(question['answers'].length + 1),
                         'description' : $(this).val()
                     };
 
@@ -48,8 +50,6 @@ $(function() {
 
                 surveyData['questions'].push(question);
             });
-
-            console.log(surveyData);
 
             $.ajax({
                 'url' : window.location.pathname,
@@ -75,10 +75,64 @@ $(function() {
                 var inputs = $parent.find('input.form-control');
                 $(inputs[inputs.length-1])
                     .clone()
-                    .attr('name', 'answer' + inputs.length + 1)
+                    .attr('name', 'answer' + (inputs.length + 1))
+                    .val('')
+                    // .data('id', -(inputs.length + 1))
                     .insertAfter(inputs[inputs.length-1]);
             })
         .end()
 
+    ;
+
+    $(document)
+        .on('click', '.survey-remove', function(ev) {
+            ev.preventDefault();
+            var $parent = $(this).parents('li.list-group-item:first');
+            var id = $parent.data('id');
+            $.ajax({
+                'url': routes.survey_delete.replace('id', id),
+                'data': {'id': id},
+                'type': 'POST'
+            })
+            .done(function(data) {
+                if(data.result) {
+                    $parent.remove();
+                }
+            });
+            ;
+        })
+        .on('click', '.survey-activate', function(ev) {
+            ev.preventDefault();
+            var $parent = $(this).parents('li.list-group-item:first');
+            var id = $parent.data('id');
+            $.ajax({
+                'url': routes.survey_status.replace('id', id).replace('newstatus', 'active'),
+                'data': {'id': id},
+                'type': 'POST'
+            })
+            .done(function(data) {
+                if(data.result) {
+                    window.location.reload();
+                }
+            });
+            ;
+        })
+        //TODO вынести в отдельную функцию
+        .on('click', '.survey-close', function(ev) {
+            ev.preventDefault();
+            var $parent = $(this).parents('li.list-group-item:first');
+            var id = $parent.data('id');
+            $.ajax({
+                'url': routes.survey_status.replace('id', id).replace('newstatus', 'closed'),
+                'data': {'id': id},
+                'type': 'POST'
+            })
+            .done(function(data) {
+                if(data.result) {
+                    window.location.reload();
+                }
+            });
+            ;
+        })
     ;
 });

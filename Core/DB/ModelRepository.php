@@ -2,6 +2,8 @@
 
 namespace Core\DB;
 
+use Core\DB\Helper\NamedParametersPreparer;
+
 class ModelRepository
 {
     protected $manager;
@@ -25,6 +27,30 @@ class ModelRepository
         return empty($result) ? null : $result[0];
     }
 
+    public function findBy(array $parameters = array(), $returnSingle = false)
+    {
+        $namedParametersString = NamedParametersPreparer::prepare($parameters);
+
+        $query = sprintf(
+            $returnSingle ? 'SELECT * FROM %s WHERE %s LIMIT 0, 1' : 'SELECT * FROM %s WHERE %s', 
+            $this->modelName, 
+            $namedParametersString
+        );
+
+        $result = $this->getConnection()
+            ->query(
+                $query,
+                $parameters
+            )
+        ;
+
+        if($returnSingle) {
+            return empty($result) ? null : $result[0];
+        } else {
+            return $result;
+        }
+    }
+
     public function persist(array &$entity = array())
     {
         if(empty($entity)) {
@@ -35,16 +61,11 @@ class ModelRepository
 
         if(is_numeric($id) && intval($id) >= 0) { //Updates existing entity
 
-            $query = sprintf('UPDATE %s SET %s WHERE id = :id', $this->modelName, '%s');
             unset($entity['id']);
 
-            $properties = array_keys($entity);
-            $setterStringParts = array_map(function($property) {
-                return sprintf('%s = :%s', $property, $property);
-            }, $properties);
+            $namedParametersString = NamedParametersPreparer::prepare($entity);
 
-            $setterString = implode(', ', $setterStringParts);
-            $query = sprintf($query, $setterString);
+            $query = sprintf('UPDATE %s SET %s WHERE id = :id', $this->modelName, $namedParametersString);
 
             $entity['id'] = $id;
 
@@ -75,7 +96,31 @@ class ModelRepository
 
             $entity['id'] = $id;
         }
+
+        return $entity;
+
     }
 
-    return $entity;
+    public function delete($id)
+    {
+        $query = sprintf('DELETE FROM %s WHERE id = :id', $this->modelName);
+
+        $this->getConnection()
+            ->query(
+                $query,
+                array('id' => $id)
+            )
+        ;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if(strpos($name, 'findBy', 0) === 0) {
+            $parameterName = strtolower(substr($name, 6));
+            return call_user_func(array($this, "findBy"), array($parameterName => $arguments[0]));
+        } else if(strpos($name, 'findOneBy', 0) === 0) {
+            $parameterName = strtolower(substr($name, 9));
+            return call_user_func(array($this, "findBy"), array($parameterName => $arguments[0]), true);
+        }
+    }
 }

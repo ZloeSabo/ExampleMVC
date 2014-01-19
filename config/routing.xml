@@ -8,6 +8,20 @@
     </route>
 
     <route>
+        <name>survey_delete</name>
+        <path>/survey/{id}/delete</path>
+        <controller>Admin</controller>
+        <action>delete</action>
+    </route>
+
+    <route>
+        <name>survey_status</name>
+        <path>/survey/{id}/status/{newstatus}</path>
+        <controller>Admin</controller>
+        <action>changeStatus</action>
+    </route>
+
+    <route>
         <name>survey</name>
         <path>/survey/{surveyname}</path>
         <controller>Survey</controller>
